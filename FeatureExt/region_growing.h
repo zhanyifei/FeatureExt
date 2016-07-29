@@ -312,9 +312,9 @@ inline bool
    void
       RegionGrowing::initialize(CloudPtr cloud,NormalPtr normals)
    {
-       float SmoothnessThreshold=5.0;
+       float SmoothnessThreshold=15.0;
        float CurvatureThreshold=0.1;
-       float ResidualThreshold=0.1;
+       float ResidualThreshold=0.5;
        float radius=1.5;
        pcl::search::KdTree<pcl::PointXYZ>::Ptr tree_method (new pcl::search::KdTree<pcl::PointXYZ> ());
        setMinClusterSize (50);
@@ -532,7 +532,7 @@ inline bool
           size_t i_nghbr = 0;
           while ( /*i_nghbr < neighbour_number_&&*/ i_nghbr < point_neighbours_[curr_seed].size () )
           {
-              int index = point_neighbours_[curr_seed][i_nghbr];
+              int index = point_neighbours_[curr_seed][i_nghbr];//当前种子点的
               if (point_labels_[index] != -1)
               {
                   i_nghbr++;
@@ -572,12 +572,12 @@ inline bool
       float cosine_threshold = cosf (theta_threshold_);
       float data[4];
 
-      data[0] = input_->points[point].data[0];
-      data[1] = input_->points[point].data[1];
-      data[2] = input_->points[point].data[2];
-      data[3] = input_->points[point].data[3];
+      data[0] = input_->points[initial_seed].data[0];
+      data[1] = input_->points[initial_seed].data[1];
+      data[2] = input_->points[initial_seed].data[2];
+      data[3] = input_->points[initial_seed].data[3];
       Eigen::Map<Eigen::Vector3f> initial_point (static_cast<float*> (data));
-      Eigen::Map<Eigen::Vector3f> initial_normal (static_cast<float*> (normals_->points[point].normal));
+      Eigen::Map<Eigen::Vector3f> initial_normal (static_cast<float*> (normals_->points[initial_seed].normal));
 
       //check the angle between normals
       if (smooth_mode_flag_ == true)
