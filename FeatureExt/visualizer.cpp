@@ -72,11 +72,11 @@ void Visualizer::show_line_segment(const vector<LineSegment>& lines,string out_p
         viewer->addLine<pcl::PointXYZ>(lines[i].startpt,lines[i].endpt,temp);
     }
     FileIo::write_line_file(lines,out_path);
-//     while (!viewer->wasStopped ())
-//     {
-//         viewer->spinOnce();
-//         //boost::this_thread::sleep (boost::posix_time::microseconds (1000));
-//     }
+    while (!viewer->wasStopped ())
+    {
+        viewer->spinOnce();
+        boost::this_thread::sleep (boost::posix_time::microseconds (1000));
+    }
 
 }
 void Visualizer::show_plane_segment(vector<PlanSegment>& planes,CloudPtr cloud,string out_path)

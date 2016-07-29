@@ -20,6 +20,7 @@ public:
 	void loadDebugImage(const cv::Mat& draw_img);
     CMyLine MergeLine(CMyLine& _startline,CMyLine& _endline);
     bool IsMerge(CMyLine& _startline,CMyLine& _endline);
+    CMyLine extend_line(CMyLine &line,float extension);
 	
 private:
 	void loadLines(const std::vector<cv::Vec4i>& lines);

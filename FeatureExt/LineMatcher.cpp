@@ -156,8 +156,12 @@ std::vector<cv::Vec4i> CLineMatcher::matchMyLines(const std::vector<cv::Vec4i>& 
                         continue;
                 }
             } 
-            if(m_my_lines[i].length>200)//0.1米的线
-            m_match_once_lines.push_back(m_my_lines[i].m_line_vec4i);
+            if(m_my_lines[i].length>200)//2米的线
+            {
+                CMyLine mergeline=extend_line(m_my_lines[i],100.0);  //两端延长一米
+                m_match_once_lines.push_back(mergeline.m_line_vec4i);
+                //m_match_once_lines.push_back(m_my_lines[i].m_line_vec4i);
+            }
         }
     } 
     return m_match_once_lines;
@@ -166,4 +170,24 @@ std::vector<cv::Vec4i> CLineMatcher::matchMyLines(const std::vector<cv::Vec4i>& 
 void CLineMatcher::loadDebugImage(const cv::Mat& draw_img)
 {
     draw_img.copyTo(m_debug_img);
+}
+
+CMyLine CLineMatcher::extend_line(CMyLine &line,float extension) 
+{
+    cout<<line.m_line_vec4i<<endl;
+    cv::Vec2i start_vec,end_vec;
+    start_vec[0]=line.m_line_vec4i[0]-line.m_line_vec4i[2];
+    start_vec[1]=line.m_line_vec4i[1]-line.m_line_vec4i[3];
+    end_vec[0]=line.m_line_vec4i[2]-line.m_line_vec4i[0];
+    end_vec[1]=line.m_line_vec4i[3]-line.m_line_vec4i[1];
+    float scale=extension/line.length;
+    start_vec[0]*=scale;
+    start_vec[1]*=scale;
+    end_vec[0]*=scale;
+    end_vec[1]*=scale;
+    CMyLine new_line;
+    cv::Vec4i new_line_vec = cv::Vec4i(line.m_line_vec4i[0]+start_vec[0], line.m_line_vec4i[1]+start_vec[1], line.m_line_vec4i[2]+end_vec[0], line.m_line_vec4i[3]+end_vec[1]);
+    cout<<new_line_vec<<endl;
+    CMyLine mergeline(new_line_vec);
+    return mergeline;
 }

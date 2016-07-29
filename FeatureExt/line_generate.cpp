@@ -121,3 +121,5 @@ void LineGenerate::RefineLine(vector<LineSegment>& src_line,vector<LineSegment>&
         dst_line.push_back(line_s);
     }
 }
+
+
