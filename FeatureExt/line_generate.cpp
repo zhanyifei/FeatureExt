@@ -32,13 +32,13 @@ void LineGenerate::GenerateLineFromPlane(vector<LineSegment>& linesegments,const
         linesegment.normal_y=plane.normal.normal_y;
         linesegment.distance=plane.distance;
         float dot_=plane.normal.normal_x*main_line.normal_x+plane.normal.normal_y*main_line.normal_y;
-        if (std::fabs(dot_)>0.9)  //平行 10度
+        if (std::fabs(dot_)>0.92)  //平行 10度
         {
             linesegment.normal_x=main_line.normal_x/main_line.normal_y;
             linesegment.normal_y=1.0;
             linesegment.distance=-linesegment.normal_x*cloud->points[plane.points_id.indices[0]].x-linesegment.normal_y*cloud->points[plane.points_id.indices[0]].y;
         }
-        if (std::fabs(dot_)<0.1)  //垂直 10度
+        if (std::fabs(dot_)<0.08)  //垂直 10度
         {
             linesegment.normal_x=-main_line.normal_y/main_line.normal_x;
             linesegment.normal_y=1.0;
@@ -99,7 +99,7 @@ void  LineGenerate::GetStartEndpt(LineSegment &linesegment,CloudItem minPt,Cloud
 void LineGenerate::RefineLine(vector<LineSegment>& src_line,vector<LineSegment>& dst_line)
 {
     CLineMatcher line_matcher;
-    line_matcher.setMaxGapAndSlope((float)200, (float)0.1);
+    line_matcher.setMaxGapAndSlope((float)400, (float)0.2);
     std::vector<cv::Vec4i> lines;
     for (int i=0;i<src_line.size();i++)
     {
@@ -110,7 +110,7 @@ void LineGenerate::RefineLine(vector<LineSegment>& src_line,vector<LineSegment>&
         line[3]=(int)(src_line[i].endpt.y*100.0);
         lines.push_back(line);
     }
-    std::vector<cv::Vec4i> match_lines = line_matcher.matchMyLines(lines);
+    std::vector<cv::Vec4i> match_lines = line_matcher.growing_line(lines);
     for (int i=0;i<match_lines.size();i++)
     {
         LineSegment line_s;

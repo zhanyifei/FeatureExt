@@ -69,8 +69,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\libs\PCL 1.6.0\include\pcl-1.6;C:\libs\PCL 1.6.0\3rdParty\Boost\include;C:\libs\PCL 1.6.0\3rdParty\Qhull\include;C:\libs\PCL 1.6.0\3rdParty\Eigen\include;C:\libs\PCL 1.6.0\3rdParty\VTK\include\vtk-5.10;C:\libs\PCL 1.6.0\3rdParty\FLANN\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\libs\PCL 1.6.0\lib;C:\libs\PCL 1.6.0\3rdParty\Boost\lib;C:\libs\PCL 1.6.0\3rdParty\VTK\lib\vtk-5.8;C:\libs\PCL 1.6.0\3rdParty\FLANN\lib;C:\libs\PCL 1.6.0\3rdParty\Qhull\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\libs\PCL 1.6.0\include\pcl-1.6;C:\libs\PCL 1.6.0\3rdParty\Boost\include;C:\libs\PCL 1.6.0\3rdParty\Qhull\include;C:\libs\PCL 1.6.0\3rdParty\Eigen\include;C:\libs\PCL 1.6.0\3rdParty\VTK\include\vtk-5.8;C:\libs\PCL 1.6.0\3rdParty\FLANN\include;C:\libs\opencv_248\build\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\libs\PCL 1.6.0\lib;C:\libs\PCL 1.6.0\3rdParty\Boost\lib;C:\libs\PCL 1.6.0\3rdParty\VTK\lib\vtk-5.8;C:\libs\PCL 1.6.0\3rdParty\FLANN\lib;C:\libs\PCL 1.6.0\3rdParty\Qhull\lib;C:\libs\opencv_248\build\x64\vc10\lib;$(LibraryPath)</LibraryPath>
     <ExecutablePath>C:\libs\PCL 1.6.0\bin;C:\libs\PCL 1.6.0\3rdParty\Eigen\bin;C:\libs\PCL 1.6.0\3rdParty\Boost\lib;C:\libs\PCL 1.6.0\3rdParty\FLANN\bin;C:\libs\PCL 1.6.0\3rdParty\Qhull\bin;C:\libs\PCL 1.6.0\3rdParty\VTK\bin;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -106,7 +106,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;pcl_kdtree_release.lib;pcl_io_release.lib;pcl_search_release.lib;pcl_segmentation_release.lib;pcl_apps_release.lib;pcl_features_release.lib;pcl_filters_release.lib;pcl_visualization_release.lib;pcl_common_release.lib;flann_cpp_s.lib;libboost_system-vc100-mt-1_47.lib;libboost_filesystem-vc100-mt-1_47.lib;libboost_thread-vc100-mt-1_47.lib;libboost_date_time-vc100-mt-1_47.lib;libboost_iostreams-vc100-mt-1_47.lib;vtkalglib.lib;vtkCharts.lib;vtkCommon.lib;vtkDICOMParser.lib;vtkexoIIc.lib;vtkexpat.lib;vtkFiltering.lib;vtkfreetype.lib;vtkftgl.lib;vtkGenericFiltering.lib;vtkGeovis.lib;vtkGraphics.lib;vtkhdf5.lib;vtkHybrid.lib;vtkImaging.lib;vtkInfovis.lib;vtkIO.lib;vtkjpeg.lib;vtklibxml2.lib;vtkmetaio.lib;vtkNetCDF.lib;vtkNetCDF_cxx.lib;vtkpng.lib;vtkproj4.lib;vtkRendering.lib;vtksqlite.lib;vtksys.lib;vtktiff.lib;vtkverdict.lib;vtkViews.lib;vtkVolumeRendering.lib;vtkWidgets.lib;vtkzlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;libboost_system-vc100-mt-gd-1_47.lib;libboost_filesystem-vc100-mt-gd-1_47.lib;libboost_thread-vc100-mt-gd-1_47.lib;libboost_date_time-vc100-mt-gd-1_47.lib;libboost_iostreams-vc100-mt-gd-1_47.lib;opencv_core248.lib;pcl_kdtree_debug.lib;pcl_io_debug.lib;pcl_search_debug.lib;pcl_segmentation_debug.lib;pcl_apps_debug.lib;pcl_features_debug.lib;pcl_filters_debug.lib;pcl_visualization_debug.lib;pcl_common_debug.lib;flann_cpp_s-gd.lib;vtkalglib-gd.lib;vtkCharts-gd.lib;vtkCommon-gd.lib;vtkDICOMParser-gd.lib;vtkexoIIc-gd.lib;vtkexpat-gd.lib;vtkFiltering-gd.lib;vtkfreetype-gd.lib;vtkftgl-gd.lib;vtkGenericFiltering-gd.lib;vtkGeovis-gd.lib;vtkGraphics-gd.lib;vtkhdf5-gd.lib;vtkHybrid-gd.lib;vtkImaging-gd.lib;vtkInfovis-gd.lib;vtkIO-gd.lib;vtkjpeg-gd.lib;vtklibxml2-gd.lib;vtkmetaio-gd.lib;vtkNetCDF-gd.lib;vtkNetCDF_cxx-gd.lib;vtkpng-gd.lib;vtkproj4-gd.lib;vtkRendering-gd.lib;vtksqlite-gd.lib;vtksys-gd.lib;vtktiff-gd.lib;vtkverdict-gd.lib;vtkViews-gd.lib;vtkVolumeRendering-gd.lib;vtkWidgets-gd.lib;vtkzlib-gd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

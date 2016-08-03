@@ -19,8 +19,12 @@ public:
 	std::vector<cv::Vec4i> matchMyLines(const std::vector<cv::Vec4i>& lines);
 	void loadDebugImage(const cv::Mat& draw_img);
     CMyLine MergeLine(CMyLine& _startline,CMyLine& _endline);
+    CMyLine MergeLine(std::vector<int> num_lines);
     bool IsMerge(CMyLine& _startline,CMyLine& _endline);
     CMyLine extend_line(CMyLine &line,float extension);
+    std::vector<cv::Vec4i> growing_line(const std::vector<cv::Vec4i>& lines);
+    int growRegion(int initial_seed);
+
 	
 private:
 	void loadLines(const std::vector<cv::Vec4i>& lines);

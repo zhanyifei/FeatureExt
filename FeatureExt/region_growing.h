@@ -312,9 +312,9 @@ inline bool
    void
       RegionGrowing::initialize(CloudPtr cloud,NormalPtr normals)
    {
-       float SmoothnessThreshold=15.0;
-       float CurvatureThreshold=0.1;
-       float ResidualThreshold=0.5;
+       float SmoothnessThreshold=5.0;
+       float CurvatureThreshold=0.05;
+       float ResidualThreshold=0.1;
        float radius=1.5;
        pcl::search::KdTree<pcl::PointXYZ>::Ptr tree_method (new pcl::search::KdTree<pcl::PointXYZ> ());
        setMinClusterSize (50);
@@ -325,6 +325,7 @@ inline bool
        setInputNormals (normals);
        setSmoothnessThreshold (SmoothnessThreshold/ 180.0 * M_PI);
        setCurvatureThreshold (CurvatureThreshold);
+       setCurvatureTestFlag(true);
        setResidualThreshold(ResidualThreshold);
        setResidualTestFlag(true);
    }
@@ -572,10 +573,14 @@ inline bool
       float cosine_threshold = cosf (theta_threshold_);
       float data[4];
 
-      data[0] = input_->points[initial_seed].data[0];
-      data[1] = input_->points[initial_seed].data[1];
-      data[2] = input_->points[initial_seed].data[2];
-      data[3] = input_->points[initial_seed].data[3];
+//       data[0] = input_->points[initial_seed].data[0];
+//       data[1] = input_->points[initial_seed].data[1];
+//       data[2] = input_->points[initial_seed].data[2];
+//       data[3] = input_->points[initial_seed].data[3];
+      data[0] = input_->points[point].data[0];
+      data[1] = input_->points[point].data[1];
+      data[2] = input_->points[point].data[2];
+      data[3] = input_->points[point].data[3];
       Eigen::Map<Eigen::Vector3f> initial_point (static_cast<float*> (data));
       Eigen::Map<Eigen::Vector3f> initial_normal (static_cast<float*> (normals_->points[initial_seed].normal));
 
@@ -688,7 +693,7 @@ inline bool
            CloudItem minPt, maxPt;
            pcl::getMinMax3D (*cloud,minPt,maxPt);
            float delta_z=maxPt.z-minPt.z;   //墙高达到0.8米才判定为墙
-           if (plane.normal.normal_z<0.5&&plane.normal.curvature<0.1&&plane.points_id.indices.size()>25&&delta_z>0.8)
+           if (plane.normal.normal_z<0.5&&plane.normal.curvature<0.1&&plane.points_id.indices.size()>25&&delta_z>0.5)
            {
                planes.push_back(plane);
            }

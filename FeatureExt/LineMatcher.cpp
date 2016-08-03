@@ -32,7 +32,7 @@ void CLineMatcher::loadLines(const std::vector<cv::Vec4i>& lines)
 }
 CMyLine CLineMatcher::MergeLine(CMyLine& _startline,CMyLine& _endline)
 {
-    CMyLine main_line;;
+    CMyLine main_line;
     if (_startline.length>_endline.length)
     {
         main_line=_startline;
@@ -45,7 +45,7 @@ CMyLine CLineMatcher::MergeLine(CMyLine& _startline,CMyLine& _endline)
     pt3=CToolFunction::getPedal(_endline.pt_start,main_line);
     pt4=CToolFunction::getPedal(_endline.pt_end,main_line);
     vector<double> dis;
-    double dis1,dis2,dis3,dis4,dis5,dis6; //两两间距离
+    double dis1,dis2,dis3,dis4,dis5,dis6; 
     dis1=CToolFunction::getPointDistance(pt1,pt2);
     dis2=CToolFunction::getPointDistance(pt1,pt3);
     dis3=CToolFunction::getPointDistance(pt1,pt4);
@@ -97,12 +97,52 @@ CMyLine CLineMatcher::MergeLine(CMyLine& _startline,CMyLine& _endline)
         return mergeline;
     }
 }
+
+CMyLine CLineMatcher::MergeLine(std::vector<int> num_lines)
+{
+    std::vector<CMyLine> lines;
+    vector<cv::Point> pts;
+    for (int i=0;i<num_lines.size();i++)
+    {
+        lines.push_back(m_my_lines[num_lines[i]]);
+    }
+    sort(lines.begin(),lines.end(),CompareLength);
+    CMyLine main_line=lines[0];
+    for (int i=0;i<num_lines.size();i++)
+    {
+        pts.push_back(CToolFunction::getPedal(m_my_lines[num_lines[i]].pt_start,main_line));
+        pts.push_back(CToolFunction::getPedal(m_my_lines[num_lines[i]].pt_end,main_line));
+    }
+    std::pair<int,int> longest;
+    double longest_dis=DBL_MIN;
+    for (int i=0;i<pts.size();i++)
+    {
+        for (int j=i+1;j<pts.size();j++)
+        {
+            if (CToolFunction::getPointDistance(pts[i],pts[j])>longest_dis)
+            {
+                longest_dis=CToolFunction::getPointDistance(pts[i],pts[j]);
+                longest.first=i;
+                longest.second=j;
+            }
+        }
+    }
+    cv::Vec4i merge_line = cv::Vec4i(pts[longest.first].x, pts[longest.first].y, pts[longest.second].x,pts[longest.second].y);
+    CMyLine mergeline(merge_line);
+    return mergeline;
+}
+
 bool CLineMatcher::IsMerge(CMyLine& _startline,CMyLine& _endline)
 {
-    if (std::abs(std::atan2(1,_startline.k)-std::atan2(1,_endline.k))<m_max_slope)   //平行
+    //if (std::abs(std::atan2(1,_startline.k)-std::atan2(1,_endline.k))<m_max_slope)
+    if (std::abs(std::atan2(1,_startline.k)-std::atan2(1,_endline.k))<m_max_slope)
     {
-        float dis=CToolFunction::getParallelLineDistance(_startline,_endline);
-        if (dis<150)//平行线间距离1.5
+        CMyLine templine=_endline;
+        templine.A=_startline.A;
+        templine.B=_startline.B;
+        templine.C=-templine.A*templine.pt_center.x-templine.B*templine.pt_center.y;
+        float dis=CToolFunction::getParallelLineDistance(_startline,templine);
+        if (dis<200)
         {
             double mindis;
             vector<double> dis;
@@ -128,10 +168,12 @@ bool CLineMatcher::IsMerge(CMyLine& _startline,CMyLine& _endline)
                 return true;
         }
         else
-            return false;
+            {
+        return false;}
     }
     else
-        return false;
+        {
+    return false;}
 }
 std::vector<cv::Vec4i> CLineMatcher::matchMyLines(const std::vector<cv::Vec4i>& lines)
 {
@@ -149,14 +191,17 @@ std::vector<cv::Vec4i> CLineMatcher::matchMyLines(const std::vector<cv::Vec4i>& 
                 {
                     if (IsMerge(m_my_lines[i],m_my_lines[j]))
                     {
-                        m_my_lines[i]=MergeLine(m_my_lines[i],m_my_lines[j]);
+                        std::vector<int> lines_num;
+                        lines_num.push_back(i);
+                        lines_num.push_back(j);
+                        m_my_lines[i]=MergeLine(lines_num);
                         m_my_lines[j].setDelete(true);
                     }
                     else
                         continue;
                 }
             } 
-            if(m_my_lines[i].length>200)//2米的线
+            if(m_my_lines[i].length>200)//过滤短线
             {
                 CMyLine mergeline=extend_line(m_my_lines[i],100.0);  //两端延长一米
                 m_match_once_lines.push_back(mergeline.m_line_vec4i);
@@ -166,6 +211,74 @@ std::vector<cv::Vec4i> CLineMatcher::matchMyLines(const std::vector<cv::Vec4i>& 
     } 
     return m_match_once_lines;
 }
+int CLineMatcher::growRegion(int initial_seed)
+{
+    std::vector<int> index;
+    std::queue<int> seeds;
+    seeds.push (initial_seed);
+    index.push_back(initial_seed);
+    int num_lines_in_segment = 1;
+
+    while (!seeds.empty ())
+    {
+        int curr_seed;
+        curr_seed = seeds.front ();
+        m_my_lines[curr_seed].setDelete(true);
+        seeds.pop ();
+        for (int i=0;i<m_my_lines.size();i++)
+        {
+            if (!m_my_lines[i].is_delete)
+            {
+                if(IsMerge(m_my_lines[curr_seed],m_my_lines[i]))
+                {
+                    seeds.push(i);
+                    index.push_back(i);
+                    num_lines_in_segment++;
+                    m_my_lines[i].setDelete(true);
+                }
+            }
+        }
+    }
+    CMyLine line=MergeLine(index);
+    if(line.length>200)//1米的线
+    {
+        CMyLine mergeline=extend_line(line,100.0);  //两端延长一米
+        m_match_once_lines.push_back(mergeline.m_line_vec4i);
+    }
+    return num_lines_in_segment;
+}
+
+std::vector<cv::Vec4i> CLineMatcher::growing_line(const std::vector<cv::Vec4i>& lines)
+{
+    loadLines(lines);
+    m_match_once_lines.clear();  
+    int num_of_lines=lines.size();//条数
+    std::sort(m_my_lines.begin(),m_my_lines.end(),CompareLength);
+    int seed = 0;
+    int segmented_lines_num = 0;
+    int number_of_segments = 0;
+    std::vector<int> num_lines_in_segment_;
+    while (segmented_lines_num < num_of_lines)
+    {
+        int lines_in_segment;
+        lines_in_segment = growRegion (seed);
+        segmented_lines_num += lines_in_segment;
+        num_lines_in_segment_.push_back (lines_in_segment);
+        number_of_segments++;
+
+        //find next point that is not segmented yet
+        for (int i_seed = 0; i_seed < num_of_lines; i_seed++)
+        {
+            if (!m_my_lines[i_seed].is_delete)
+            {
+                seed = i_seed;
+                break;
+            }
+        }
+    }
+    return m_match_once_lines;
+}
+
 
 void CLineMatcher::loadDebugImage(const cv::Mat& draw_img)
 {
