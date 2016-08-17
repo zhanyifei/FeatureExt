@@ -24,6 +24,8 @@
 #include <pcl/features/normal_3d.h>
 #include <boost/filesystem.hpp>
 #include <boost/thread/thread.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/ini_parser.hpp>
 #include <pcl/common/common_headers.h>
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/visualization/pcl_visualizer.h>

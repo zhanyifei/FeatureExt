@@ -96,10 +96,10 @@ void  LineGenerate::GetStartEndpt(LineSegment &linesegment,CloudItem minPt,Cloud
         linesegment.endpt=_endpt;
     }
 }
-void LineGenerate::RefineLine(vector<LineSegment>& src_line,vector<LineSegment>& dst_line)
+void LineGenerate::RefineLine(vector<LineSegment>& src_line,vector<LineSegment>& dst_line,Config &configs)
 {
     CLineMatcher line_matcher;
-    line_matcher.setMaxGapAndSlope((float)400, (float)0.2);
+    line_matcher.initialize(configs.max_gap,configs.max_slope,configs.max_distance,configs.max_length,configs.extension);
     std::vector<cv::Vec4i> lines;
     for (int i=0;i<src_line.size();i++)
     {

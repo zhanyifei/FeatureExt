@@ -134,7 +134,6 @@ CMyLine CLineMatcher::MergeLine(std::vector<int> num_lines)
 
 bool CLineMatcher::IsMerge(CMyLine& _startline,CMyLine& _endline)
 {
-    //if (std::abs(std::atan2(1,_startline.k)-std::atan2(1,_endline.k))<m_max_slope)
     if (std::abs(std::atan2(1,_startline.k)-std::atan2(1,_endline.k))<m_max_slope)
     {
         CMyLine templine=_endline;
@@ -142,7 +141,7 @@ bool CLineMatcher::IsMerge(CMyLine& _startline,CMyLine& _endline)
         templine.B=_startline.B;
         templine.C=-templine.A*templine.pt_center.x-templine.B*templine.pt_center.y;
         float dis=CToolFunction::getParallelLineDistance(_startline,templine);
-        if (dis<200)
+        if (dis<m_max_gap)
         {
             double mindis;
             vector<double> dis;
@@ -161,7 +160,7 @@ bool CLineMatcher::IsMerge(CMyLine& _startline,CMyLine& _endline)
                 (_startline.pt_start.y-_endline.pt_end.y)*(_startline.pt_end.y-_endline.pt_end.y);
             float dot2=(_startline.pt_start.x-_endline.pt_start.x)*(_startline.pt_end.x-_endline.pt_start.x)+
                 (_startline.pt_start.y-_endline.pt_start.y)*(_startline.pt_end.y-_endline.pt_start.y);
-            if (mindis>m_max_gap&&(dot1>=0.0)&&(dot2>=0.0))
+            if (mindis>m_max_distance&&(dot1>=0.0)&&(dot2>=0.0))
             {
                 return false;
             }else
@@ -175,42 +174,7 @@ bool CLineMatcher::IsMerge(CMyLine& _startline,CMyLine& _endline)
         {
     return false;}
 }
-std::vector<cv::Vec4i> CLineMatcher::matchMyLines(const std::vector<cv::Vec4i>& lines)
-{
-    loadLines(lines);
-    m_match_once_lines.clear();
-    sort(m_my_lines.begin(),m_my_lines.end(),CompareLength);
-    for (size_t i = 0; i < m_my_lines.size(); i++)
-    {
-        if (!m_my_lines[i].is_delete)
-        {
-            //m_my_lines[i].setDelete(true);
-            for (size_t j = 0; j < m_my_lines.size(); j++)
-            {
-                if (!m_my_lines[j].is_delete)
-                {
-                    if (IsMerge(m_my_lines[i],m_my_lines[j]))
-                    {
-                        std::vector<int> lines_num;
-                        lines_num.push_back(i);
-                        lines_num.push_back(j);
-                        m_my_lines[i]=MergeLine(lines_num);
-                        m_my_lines[j].setDelete(true);
-                    }
-                    else
-                        continue;
-                }
-            } 
-            if(m_my_lines[i].length>200)//过滤短线
-            {
-                CMyLine mergeline=extend_line(m_my_lines[i],100.0);  //两端延长一米
-                m_match_once_lines.push_back(mergeline.m_line_vec4i);
-                //m_match_once_lines.push_back(m_my_lines[i].m_line_vec4i);
-            }
-        }
-    } 
-    return m_match_once_lines;
-}
+
 int CLineMatcher::growRegion(int initial_seed)
 {
     std::vector<int> index;
@@ -240,9 +204,9 @@ int CLineMatcher::growRegion(int initial_seed)
         }
     }
     CMyLine line=MergeLine(index);
-    if(line.length>200)//1米的线
+    if(line.length>m_max_length)//1米的线
     {
-        CMyLine mergeline=extend_line(line,100.0);  //两端延长一米
+        CMyLine mergeline=extend_line(line,m_extension);  //两端延长一米
         m_match_once_lines.push_back(mergeline.m_line_vec4i);
     }
     return num_lines_in_segment;
@@ -277,12 +241,6 @@ std::vector<cv::Vec4i> CLineMatcher::growing_line(const std::vector<cv::Vec4i>& 
         }
     }
     return m_match_once_lines;
-}
-
-
-void CLineMatcher::loadDebugImage(const cv::Mat& draw_img)
-{
-    draw_img.copyTo(m_debug_img);
 }
 
 CMyLine CLineMatcher::extend_line(CMyLine &line,float extension) 

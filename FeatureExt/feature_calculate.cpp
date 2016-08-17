@@ -133,44 +133,6 @@ void FeatureCalculate::rpca_plane(CloudPtr cloud, PlanSegment &plane_rpca, float
     PlanSegment final_plane;
     final_plane = planes[0];
     planes.clear();
-//     vector<float> distance;
-//     vector<float> distance_sort;
-//     for (int n = 0; n < point_num; n++) {
-//         float dis_from_point_plane;
-//         dis_from_point_plane =compute_distance_from_point_to_plane(cloud->points[n],final_plane);
-//         distance.push_back(dis_from_point_plane);
-//         distance_sort.push_back(dis_from_point_plane);
-//     }
-//     sort(distance_sort.begin(), distance_sort.end());
-//     float distance_median;
-//     distance_median = distance_sort[point_num / 2];
-//     distance_sort.clear();
-//     float MAD;
-//     vector<float> temp_MAD;
-//     for (int n = 0; n < point_num; n++) {
-//         temp_MAD.push_back(abs(distance[n] - distance_median));
-//     }
-//     sort(temp_MAD.begin(), temp_MAD.end());
-//     MAD = 1.4826 * temp_MAD[point_num / 2];
-//  /*   pcl::PointIndices points_id;*/
-//     if (MAD == 0) {
-//         for (int n = 0; n < point_num; n++) {
-//             CloudItem temp_point=cloud->points[n];
-//             cloud_final->points.push_back(temp_point);
-//         }
-//     } else {
-//         for (int n = 0; n < point_num; n++) {
-//             float Rz;
-//             Rz = (abs(distance[n] - distance_median)) / MAD;
-//             if (Rz < 2.5) {
-//                 CloudItem temp_point=cloud->points[n];
-//                 cloud_final->points.push_back(temp_point);
-/*                points_id.indices.push_back(plane_rpca.points_id.indices[n]);*/
-//             }
-//         }
-//     }
-/*    plane_rpca.points_id=points_id;*/
-/*   pca(cloud_final,plane_rpca);*/
     final_plane.points_id=plane_rpca.points_id;
     plane_rpca=final_plane;
 }

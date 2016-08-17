@@ -10,14 +10,15 @@ public:
 	CLineMatcher();
 	~CLineMatcher();
 
-	inline void setMaxGapAndSlope(float max_gap, float max_slope)
+	inline void initialize(float max_gap, float max_slope,float max_distance,float max_length,float extension)
 	{
-		m_max_gap = max_gap;
-		m_max_slope = max_slope;
+		m_max_gap = max_gap*100.0;
+        m_max_slope = max_slope/180.0*M_PI;
+        m_max_distance = max_distance*100.0;
+		m_max_length = max_length*100.0;
+        m_extension=extension*100.0;
 	}
 
-	std::vector<cv::Vec4i> matchMyLines(const std::vector<cv::Vec4i>& lines);
-	void loadDebugImage(const cv::Mat& draw_img);
     CMyLine MergeLine(CMyLine& _startline,CMyLine& _endline);
     CMyLine MergeLine(std::vector<int> num_lines);
     bool IsMerge(CMyLine& _startline,CMyLine& _endline);
@@ -31,8 +32,10 @@ private:
 
 	float m_max_gap;
 	float m_max_slope;
+    float m_max_distance;
+    float m_max_length;
+    float m_extension;
 	std::vector<CMyLine> m_my_lines;
 	std::vector<cv::Vec4i> m_match_once_lines;
-	cv::Mat m_debug_img;
 };
 

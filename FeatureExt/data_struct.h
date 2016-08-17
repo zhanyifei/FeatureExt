@@ -23,3 +23,14 @@ struct LineSegment
     float distance;
     CloudItem startpt,endpt;    //线段起点终点
 };
+
+struct Config
+{
+    float voxel_scale;//格网抽稀scale
+    int num_of_neighbours; //
+    float epi,pr,relia; //
+    float radius;//区域生长的半径
+    float smoothness_threshold,curvature_threshold,residual_threshold,normalz_thresold,deltaz_threshold;
+    int cloud_size_threshold;
+    float max_slope,max_gap,max_distance,max_length,extension;
+};

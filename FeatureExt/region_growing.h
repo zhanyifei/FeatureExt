@@ -310,12 +310,8 @@ inline bool
       normals_ = norm;
   }
    void
-      RegionGrowing::initialize(CloudPtr cloud,NormalPtr normals)
+      RegionGrowing::initialize(CloudPtr cloud,NormalPtr normals,float SmoothnessThreshold,float CurvatureThreshold,float ResidualThreshold,float radius)
    {
-       float SmoothnessThreshold=5.0;
-       float CurvatureThreshold=0.05;
-       float ResidualThreshold=0.1;
-       float radius=1.5;
        pcl::search::KdTree<pcl::PointXYZ>::Ptr tree_method (new pcl::search::KdTree<pcl::PointXYZ> ());
        setMinClusterSize (50);
        setMaxClusterSize (1000000);

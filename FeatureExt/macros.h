@@ -2,7 +2,6 @@
 #include <pcl/point_types.h>
 #include <pcl/point_cloud.h>
 
-
 typedef pcl::PointXYZ CloudItem;//XYZ格式的点云单元
 typedef pcl::PointCloud<CloudItem> Cloud;//由XYZA格式的点云单元构成的点云数据
 typedef Cloud::ConstPtr CloudConstPtr;//指向点云的常量指针

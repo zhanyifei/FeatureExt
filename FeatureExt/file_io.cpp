@@ -52,3 +52,28 @@ void FileIo::write_line_file(const vector<LineSegment>& lines,string out_path)
     mid_ofile.close();
     mif_ofile.close();
 }
+void FileIo::load_config_file(const string config_file_path,Config &configs)
+{
+    boost::property_tree::ptree pt;  
+    boost::property_tree::ini_parser::read_ini(config_file_path, pt);
+    configs.voxel_scale=atof(pt.get<std::string>("VOXEL_SAMPLE.VOXEL_SCALE").c_str());
+
+    configs.num_of_neighbours=atoi(pt.get<std::string>("RPCA.NUM_OF_NEIGHBOURS").c_str());
+    configs.epi=atof(pt.get<std::string>("RPCA.EPI").c_str());
+    configs.pr=atof(pt.get<std::string>("RPCA.PR").c_str());
+    configs.relia=atof(pt.get<std::string>("RPCA.RELIA").c_str());
+
+    configs.radius=atof(pt.get<std::string>("REGION_GROWING.RADIUS").c_str());
+    configs.smoothness_threshold=atof(pt.get<std::string>("REGION_GROWING.SMOOTHNESS_THRESHOLD").c_str());
+    configs.curvature_threshold=atof(pt.get<std::string>("REGION_GROWING.CURVATURE_THRESHOLD").c_str());
+    configs.residual_threshold=atof(pt.get<std::string>("REGION_GROWING.RESIDUAL_THRESHOLD").c_str());
+    configs.normalz_thresold=atof(pt.get<std::string>("REGION_GROWING.NORMALZ_THRESHOLD").c_str());
+    configs.deltaz_threshold=atof(pt.get<std::string>("REGION_GROWING.DELTAZ_THRESHOLD").c_str());
+    configs.cloud_size_threshold=atoi(pt.get<std::string>("REGION_GROWING.CLOUD_SIZE_THRESHOLD").c_str());
+
+    configs.max_slope=atof(pt.get<std::string>("REFINE_LINE.MAX_SLOPE").c_str());
+    configs.max_gap=atof(pt.get<std::string>("REFINE_LINE.MAX_GAP").c_str());
+    configs.max_distance=atof(pt.get<std::string>("REFINE_LINE.MAX_DISTANCE").c_str());
+    configs.max_length=atof(pt.get<std::string>("REFINE_LINE.MAX_LENGTH").c_str());
+    configs.extension=atof(pt.get<std::string>("REFINE_LINE.EXTENSION").c_str());
+}
